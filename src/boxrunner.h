@@ -1,24 +1,24 @@
 /*
  * Class Name : BoxRunner
- * Func : 
+ * Func :
  *   Run user's program in the way which could be execute by sandbox.
  *   Supplied language : C, CPP, Java, Python
  */
- 
 #ifndef _JUDGER_COMPILER_
 #define _JUDGER_COMPILER_
 
-#include "common.h"
+#include "GlobalHelpers.h"
 #include "sandbox.h"
+#include "config.h"
 
-namespace Judger{
+namespace Intereviwer{
     class BoxRunner {
     public:
         BoxRunner();
         /**
          * init this object
          */
-        void init(LogFunc lf, const Config &config);
+        void init(const Config &config);
         /**
          * Setup language
          * @param lang language
@@ -87,14 +87,16 @@ namespace Judger{
         int memory_limit, time_limit;
         char args[MAX_ARG_NUMBER][MAX_STR_LENGTH];
         String result, language;
-        
+
         int16_t ban_list[MAX_POLICY];
-        
+
         minisbox_t msb;
         pid_t sand_pid;
-        
+
         LogFunc LOG;
-        
+
         void setup_policy();
     };
 }
+
+#endif

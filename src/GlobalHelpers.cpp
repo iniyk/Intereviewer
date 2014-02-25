@@ -1,23 +1,25 @@
 #include "GlobalHelpers.h"
 
+using namespace Intereviwer;
+
 /**
- * Convert an integer to a string
+ * Convert an integer to a String
  * @param i     The integer
- * @return      The converted string
+ * @return      The converted String
  */
-string intToString(int i) {
+String intToString(int i) {
     char str[15];
     sprintf(str, "%d", i);
-    return (string)str;
+    return (String)str;
 }
 
 /**
- * Convert a string to an integer
+ * Convert a String to an integer
  * WARNING: did not check if it's valid
- * @param str   The string
+ * @param str   The String
  * @return      The converted interger
  */
-int stringToInt(string str) {
+int stringToInt(String str) {
     return atoi(str.c_str());
 }
 
@@ -27,7 +29,7 @@ int stringToInt(string str) {
  * https://stackoverflow.com/questions/997946/how-to-get-current-time-and-date-in-c
  * @return Current datetime in YYYY-MM-DD HH:mm:ss
  */
-const string currentDateTime() {
+const String currentDateTime() {
     time_t     now = time(NULL);
     struct tm  tstruct;
     char       buf[80];
@@ -42,7 +44,7 @@ const string currentDateTime() {
  * https://stackoverflow.com/questions/997946/how-to-get-current-time-and-date-in-c
  * @return Current date in YYYY-MM-DD
  */
-const string currentDate() {
+const String currentDate() {
     time_t     now = time(NULL);
     struct tm  tstruct;
     char       buf[80];
@@ -53,17 +55,17 @@ const string currentDate() {
 }
 
 /**
- * Split the string into pieces by the delimeter
+ * Split the String into pieces by the delimeter
  * taken from https://stackoverflow.com/a/236803
- * @param str                   The original string
+ * @param str                   The original String
  * @param delim                 Delimeter
  * @param removeAppendedNull    Where to remove the appended empty strings
- * @return Splitted string
+ * @return Splitted String
  */
-vector<string> split(const string &str, char delim, bool removeAppendedNull) {
-    vector<string> elems;
+string split(const String &str, char delim, bool removeAppendedNull) {
+    string elems;
     stringstream ss(str);
-    string item;
+    String item;
     while (getline(ss, item, delim)) {
         elems.push_back(item);
     }
@@ -76,34 +78,34 @@ vector<string> split(const string &str, char delim, bool removeAppendedNull) {
 }
 
 /**
- * Split the string into pieces by the delimeter, ignore appended empty strings
- * @param str   The original string
+ * Split the String into pieces by the delimeter, ignore appended empty strings
+ * @param str   The original String
  * @param delim Delimeter
- * @return Splitted string
+ * @return Splitted String
  */
-vector<string> split(const string &str, char delim) {
+string split(const String &str, char delim) {
     return split(str, delim, true);
 }
 
 
 /**
- * Load the whole text file content to a string
+ * Load the whole text file content to a String
  * @param filename      File to load
  * @return File content
  */
-string loadAllFromFile(string filename) {
+String loadAllFromFile(String filename) {
     int tried = 0;
-    string res = "", tmps;
+    String res = "", tmps;
     fstream fin(filename.c_str(), fstream::in);
-    
+
     while (fin.fail() && tried++ < 10) {
         fin.open(filename.c_str(), fstream::in);
     }
-    
+
     if (fin.fail()) {
         throw Exception("File not found");
     }
-    
+
     while (getline(fin,tmps)) {
         if (res != "") res += "\n";
         res += tmps;
@@ -111,4 +113,82 @@ string loadAllFromFile(string filename) {
     }
     fin.close();
     return res;
+}
+
+void seperate(const String &str, StrVector &res, char sep = ' ') {
+    int len = str.length();
+    char buffer[MAX_STR_LENGTH];
+    int now = 0;
+
+    res.clean();
+
+    for (int i=0; i<len; ++i) {
+        if (str[i]==sep || (sep=='\n' && str[i]=='\r')) {
+            if (now>0) {
+                buffer[now] = 0;
+                res.push_back(String(buffer));
+                now = 0;
+            }
+        } else {
+            buffer[now++] = str[i];
+        }
+    }
+}
+
+String int2string(int x) {
+    char tmp[MAX_INT_LENGTH];
+    sprintf(tmp, "%d", x);
+    String ret = tmp;
+    return ret;
+}
+
+int limitstring2resource(const String &limit_str) {
+    if (limit_str == "TIME") {
+        return RLIMIT_CPU;
+    }
+    if (limit_str == "MEMORY") {
+        return RLIMIT_DATA;
+    }
+    if (limit_str == "FILE") {
+        return RLIMIT_NOFILE;
+    }
+    if (limit_str == "PROCESS") {
+        return RLIMIT_NPROC;
+    }
+    if (limit_str == "STACK") {
+        return RLIMIT_STACK;
+    }
+}
+
+inline bool alphaornumber(char x) {
+    if (x>='a' && x<='z') return true;
+    if (x>='A' && x<='Z') return true;
+    if (x>='0' && x<='9') return true;
+    return false;
+}
+
+unsigned long ts2ms(struct timespec ts) {
+    return ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
+}
+
+/* convert syscall_t to 15bit sc_table index */
+int16_t sc2idx(syscall_t scinfo) {
+#ifdef __x86_64__
+    assert((scinfo.scno >= 0) && (scinfo.scno < 1024) &&
+        (scinfo.mode >= 0) && (scinfo.mode < 32));
+    return (int16_t)(scinfo.scno | (scinfo.mode << 10));
+#else /* __i386__ */
+    assert((scinfo >= 0) && (scinfo < 1024));
+    return (int16_t)(scinfo);
+#endif /* __x86_64__ */
+}
+
+/* tag syscall number with linux32 abi mask */
+int16_t abi32(int scno) {
+    assert((scno >= 0) && (scno < 1024));
+#ifdef __x86_64__
+    return (int16_t)(scno | (1 << 10));
+#else /* __i386__ */
+    return (int16_t)(scno);
+#endif /* __x86_64__ */
 }

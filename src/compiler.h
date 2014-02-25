@@ -1,6 +1,6 @@
 /*
  * Class Name : Compiler
- * Func : 
+ * Func :
  *   Compile user's program in the way which could be watched by another thread.
  *   Supplied language : C, CPP, Java, Python
  *   Other's could add other language simplyly register by Register(), and add a .cmp file.
@@ -11,7 +11,7 @@
 #include "common.h"
 #include "config.h"
 
-namespace Judger{
+namespace Intereviwer{
     class Compiler{
     public:
         Compiler();
@@ -91,7 +91,7 @@ namespace Judger{
 
         typedef std::vector<LangSetting> LangSettingArr;
         typedef std::map<String, int> LangDirector;
-        
+
         /*------------------data-----------------*/
         LangSettingArr lsa;
         LangDirector ld;
@@ -107,7 +107,7 @@ namespace Judger{
          *                  2 cmp file path invalid
          */
         int SetupByCmpFile(int director, const String &cmp_path);
-        void 
+        void
     };
 
 }

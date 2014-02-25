@@ -1,9 +1,9 @@
 #include "boxrunner.h"
 
-using namespace Judger;
+using namespace Intereviwer;
 
 void BoxRunner::local_log_func(const String &str) {
-    
+
 }
 
 void BoxRunner::init(LogFunc lf = &silent_log_func, const Config &config) {
@@ -12,7 +12,7 @@ void BoxRunner::init(LogFunc lf = &silent_log_func, const Config &config) {
     time_limit = AUTO_TIME_LIMIT;
     language = 'cpp';
     LOG = lf;
-    
+
     string2intarr(config.)
 }
 
@@ -44,24 +44,24 @@ void BoxRunner::SetMemoryLimit(int val) {
 
 int BoxRunner::Run(const String &target_path, int fd_rd, int fd_wt) {
     strcpy(args[0], target_path.c_str());
-    
+
     if (sandbox_init(&msb.sbox, args) != 0) {
 #ifdef __DEBUG__
         LOG("[ERROR] error at boxrunner Run() -- sandbox_init error");
 #endif
         return -1;
     }
-    
+
     SetPolicy
 }
 
 int BoxRunner::status() {
     int ret;
-    
+
     pid_t tmp = waitpid(sand_pid, &ret, WNOHANG);
-    
+
     if (tmp == 0) return 0;
-    
+
     return WEXITSTATUS(status);
 }
 
@@ -75,7 +75,7 @@ void BoxRunner::setup_policy() {
     }
     bool *ban_list = &banlist_other;
     if (language == 'java') {
-        
+
     }
     for (int i)
 }

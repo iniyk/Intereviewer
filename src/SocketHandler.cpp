@@ -1,11 +1,13 @@
-/* 
+/*
  * File:   SocketHandler.cpp
  * Author: 51isoft
- * 
+ *
  * Created on 2014年1月13日, 下午10:06
  */
 
 #include "SocketHandler.h"
+
+using namespace Dispatcher;
 
 const int SocketHandler::CHECK_ALIVE_INTERVAL = 10;
 
@@ -35,11 +37,11 @@ bool SocketHandler::checkAlive() {
  * @return The connection message, within HANDSHAKE_TIMEOUT
  */
 string SocketHandler::getConnectionMessage() {
-    
+
     struct timeval case_startv,case_nowv;
     struct timezone case_startz,case_nowz;
     gettimeofday(&case_startv,&case_startz);
-    
+
     int time_passed;
     ssize_t length;
     char buffer[255];
@@ -105,10 +107,10 @@ void SocketHandler::sendFile(string filename) {
     int source = open(filename.c_str(), O_RDONLY);
     struct stat file_stat;
     char buffer[1024];
-    
+
     fstat(source, &file_stat);
     size_t length = htonl(file_stat.st_size);
-    
+
     // use first 4 bytes to send file size
     memcpy(buffer, &length, sizeof(length));
     try {
@@ -117,7 +119,7 @@ void SocketHandler::sendFile(string filename) {
         close(source);
         throw e;
     }
-    
+
     // send the message body
     while ((length = read(source, buffer, sizeof(buffer))) > 0) {
         try {
@@ -153,12 +155,12 @@ void SocketHandler::receiveFile(string filename) {
     FILE * fp;
     size_t length, got;
     char buffer[1024];
-    
+
     // get first 4 bytes, the length info
     receiveMessage(buffer, sizeof(length));
     memcpy(&length, buffer, sizeof(length));
     length = ntohl(length);
-    
+
     // recieve body, write them to file
     fp = fopen(filename.c_str(), "wb");
     got = 0;
@@ -182,7 +184,7 @@ void SocketHandler::receiveFileWithoutLength(string filename) {
     ssize_t got;
     FILE * fp;
     char buffer[1024];
-    
+
     fp = fopen(filename.c_str(), "wb");
     while (!got_things) {
         buffer[0] = 0; // clear first char, for sanity check

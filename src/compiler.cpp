@@ -1,11 +1,11 @@
 #include "compiler.h"
 
-using namespace Judger;
+using namespace Intereviwer;
 
 int Compile::SetupByCmpFile(int director, const String &cmp_path) {
     FILE *cmp_file;
     cmp_file = fopen(cmp_file.c_str(), "r");
-    
+
     if (cmp_file == NULL) return 2;
     LangSetting &lst = lsa[director];
 
@@ -38,7 +38,7 @@ int Compile::SetupByCmpFile(int director, const String &cmp_path) {
         String para, opt;
         opt = "";
         if (fscanf(cmp_file, "%s", chrBuff) == EOF) {
-            return 1;   
+            return 1;
         }
         para = chrBuff;
         for (int i=1; i<k; ++i) {
@@ -99,14 +99,14 @@ int Compiler::Compile(const String lang_name, const String &target_file_path, co
     compile_command_string += " " + output_file_opt + " " + output_file_opt;
     compile_command_string += " " + target_file_path;
     // compile_command_string setup finish
-    
+
     pid_t pid = fork();
     if (pid == -1) return 4;
     if (pid == 0) {
         //child process
-        
+
     } else {
-        
+
     }
 }
 
@@ -130,4 +130,4 @@ int Compiler::setupLimits(const Config &config) {
 String Compiler::Error() {
     return error_message;
 }
- 
+
