@@ -6,7 +6,6 @@
  */
 
 #include "Logger.h"
-#include "GlobalHelpers.h"
 
 using namespace Dispatcher;
 

@@ -8,10 +8,11 @@
 #ifndef SOCKETHANDLER_H
 #define	SOCKETHANDLER_H
 
-//#include "dispatcher.h"
+#include "GlobalHelpers.h"
 
 namespace Dispatcher{
     using namespace std;
+    using namespace Intereviwer;
 
     class SocketHandler {
     public:

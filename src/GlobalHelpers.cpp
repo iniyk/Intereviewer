@@ -62,9 +62,9 @@ const String currentDate() {
  * @param removeAppendedNull    Where to remove the appended empty strings
  * @return Splitted String
  */
-string split(const String &str, char delim, bool removeAppendedNull) {
-    string elems;
-    stringstream ss(str);
+StrVector split(const String &str, char delim, bool removeAppendedNull = true) {
+    StrVector elems;
+    std::stringstream ss(str);
     String item;
     while (getline(ss, item, delim)) {
         elems.push_back(item);
@@ -78,17 +78,6 @@ string split(const String &str, char delim, bool removeAppendedNull) {
 }
 
 /**
- * Split the String into pieces by the delimeter, ignore appended empty strings
- * @param str   The original String
- * @param delim Delimeter
- * @return Splitted String
- */
-string split(const String &str, char delim) {
-    return split(str, delim, true);
-}
-
-
-/**
  * Load the whole text file content to a String
  * @param filename      File to load
  * @return File content
@@ -96,14 +85,14 @@ string split(const String &str, char delim) {
 String loadAllFromFile(String filename) {
     int tried = 0;
     String res = "", tmps;
-    fstream fin(filename.c_str(), fstream::in);
+    std::fstream fin(filename.c_str(), std::fstream::in);
 
     while (fin.fail() && tried++ < 10) {
-        fin.open(filename.c_str(), fstream::in);
+        fin.open(filename.c_str(), std::fstream::in);
     }
 
     if (fin.fail()) {
-        throw Exception("File not found");
+        throw DException("File not found");
     }
 
     while (getline(fin,tmps)) {
@@ -120,7 +109,7 @@ void seperate(const String &str, StrVector &res, char sep = ' ') {
     char buffer[MAX_STR_LENGTH];
     int now = 0;
 
-    res.clean();
+    res.clear();
 
     for (int i=0; i<len; ++i) {
         if (str[i]==sep || (sep=='\n' && str[i]=='\r')) {

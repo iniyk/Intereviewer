@@ -1,7 +1,7 @@
 #ifndef _JUDGER_CONFIG_
 #define _JUDGER_CONFIG_
 
-#include "common.h"
+#include "GlobalHelpers.h"
 
 namespace Intereviwer{
     class Config{

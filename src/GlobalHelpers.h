@@ -10,7 +10,9 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <assert.h>
 
+#include <map>
 #include <string>
 #include <vector>
 #include <istream>
@@ -20,13 +22,24 @@
 #include <unistd.h>
 #include <sysexits.h>
 #include <syscall.h>
+#include <strings.h>
+#include <errno.h>
+#include <netdb.h>
+#include <pthread.h>
 
+#include <sys/types.h>
+#include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+#include <sys/types.h>
+#include <sys/fcntl.h>
+#include <sys/socket.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
 
-#include "Logger.h"
-#include "Exception.h"
-#include "SocketHandler.h"
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 #include "Exception.h"
 
 #include "sandbox.h"
@@ -40,6 +53,11 @@ namespace Intereviwer{
     const int MAX_PROGRAM_OUTPUT = 4096;
     const int MAX_INT_LENGTH = 40;
     const int MAX_INT64 = 32767;
+    const int MAX_ARG_NUMBER = 1024;
+    const int MAX_POLICY = 500;
+    const int AUTO_MEMORY_LIMIT = 1024*1024*32; //32MB
+    const int AUTO_TIME_LIMIT = 3000;           //3sec
+    const int HANDSHAKE_TIMEOUT = 5000;         //5sec
 
     const String config_file_path("/etc/Judger/Judger.conf");
 
@@ -56,12 +74,11 @@ namespace Intereviwer{
     int stringToInt(String);
     const String currentDateTime();
     const String currentDate();
-    StrVector split(const String &, char, bool);
-    StrVector split(const String &, char);
+    StrVector split(const String &, char, bool = true);
 
-    typedef Dispatcher::Logger DLogger;
-    typedef Dispatcher::Exception DException;
-    typedef Dispatcher::SocketHandler DSocketHandler;
+    //typedef Dispatcher::Logger DLogger;
+    //typedef Dispatcher::Exception DException;
+    //typedef Dispatcher::SocketHandler DSocketHandler;
 
     #define LOG DLogger::Getinstance()->log
     #define LOGGER DLogger::Getinstance()
