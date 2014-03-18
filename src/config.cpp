@@ -1,6 +1,6 @@
 #include "config.h"
 
-using namespace Intereviwer;
+namespace Intereviwer{
 
 Config::Config() {
     data.clear();
@@ -101,4 +101,5 @@ int Config::selectSection(const String &section) {
 
 String Config::getConfig(const String &par) {
     return data[now_section_id].entry[par];
+}
 }

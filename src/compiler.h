@@ -8,7 +8,7 @@
 #ifndef _JUDGER_COMPILER_
 #define _JUDGER_COMPILER_
 
-#include "common.h"
+#include "GlobalHelpers.h"
 #include "config.h"
 
 namespace Intereviwer{

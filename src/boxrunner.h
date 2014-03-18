@@ -18,7 +18,7 @@ namespace Intereviwer{
         /**
          * init this object
          */
-        void init(const Config &config);
+        void init(Config *_config);
         /**
          * Setup language
          * @param lang language
@@ -48,7 +48,7 @@ namespace Intereviwer{
          *                     -1 sandbox error\n
          *                     -2 target file invalid
          */
-        int Run(const String &target_path, int fd_rd, int fd_wt);
+        int Run(const String &target_path, int fd_rd, int fd_wt, const String &lang);
         /**
          * get last run result message
          * @return if Run() hasn't been used since last init() it will return ""\n
@@ -60,40 +60,25 @@ namespace Intereviwer{
          * @return 0 running\n
          *         1 has been exit
          */
-        int status();
+        int Status();
         /**
          * kill sandbox process
          * @return 0 kill success
          */
-        int kill();
+        int Kill();
     private:
         //Sandbox Defination
-        const String result_name[] = {"PD", "OK", "RF", "ML", "OL", "TL", "RT", "AT", "IE", "BP", NULL};
-        typedef action_t* (*rule_t)(const sandbox_t*, const event_t*, action_t*);
-        typedef struct {
-           sandbox_t sbox;
-           policy_t default_policy;
-           rule_t sc_table[INT16_MAX + 1];
-        } minisbox_t;
-        typedef enum {
-            P_ELAPSED = 0, P_CPU = 1, P_MEMORY = 2,
-        } probe_t;
-        //Sandbox Function
-        res_t probe(const sandbox_t* psbox, probe_t key);
-        void policy(const policy_t*, const event_t*, action_t*);
-        action_t* _KILL_RF(const sandbox_t*, const event_t*, action_t*);
-        action_t* _CONT(const sandbox_t*, const event_t*, action_t*);
-
+        StrVector result_name;
+        
         int memory_limit, time_limit;
-        char args[MAX_ARG_NUMBER][MAX_STR_LENGTH];
+        char* args[MAX_ARG_NUMBER];
         String result, language;
 
         int16_t ban_list[MAX_POLICY];
+        Config* config;
 
         minisbox_t msb;
         pid_t sand_pid;
-
-        LogFunc LOG;
 
         void setup_policy();
     };

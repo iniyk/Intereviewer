@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="90">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="HeaderFiles" displayName="头文件" projectFiles="true">
+      <itemPath>src/Exception.h</itemPath>
+      <itemPath>src/GlobalHelpers.h</itemPath>
+      <itemPath>src/Logger.h</itemPath>
+      <itemPath>src/SocketHandler.h</itemPath>
+      <itemPath>src/boxrunner.h</itemPath>
+      <itemPath>src/compiler.h</itemPath>
+      <itemPath>src/config.h</itemPath>
+      <itemPath>src/player.h</itemPath>
+      <itemPath>src/sandbox.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="SourceFiles" displayName="源文件" projectFiles="true">
+      <itemPath>src/GlobalHelpers.cpp</itemPath>
+      <itemPath>src/Logger.cpp</itemPath>
+      <itemPath>src/SocketHandler.cpp</itemPath>
+      <itemPath>src/boxrunner.cpp</itemPath>
+      <itemPath>src/compiler.cpp</itemPath>
+      <itemPath>src/config.cpp</itemPath>
+      <itemPath>src/player.cpp</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles" displayName="资源文件" projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="测试文件"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="重要文件"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+      </compileType>
+      <item path="src/Exception.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/GlobalHelpers.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/GlobalHelpers.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/Logger.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Logger.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/SocketHandler.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/SocketHandler.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/boxrunner.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/boxrunner.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/compiler.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/compiler.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/config.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/player.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/player.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/sandbox.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+    <conf name="Release" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+      </compileType>
+      <item path="src/Exception.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/GlobalHelpers.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/GlobalHelpers.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/Logger.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Logger.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/SocketHandler.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/SocketHandler.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/boxrunner.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/boxrunner.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/compiler.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/compiler.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/config.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/player.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/player.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/sandbox.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

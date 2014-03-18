@@ -31,6 +31,22 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Exception.h" />
+		<Unit filename="GlobalHelpers.cpp" />
+		<Unit filename="GlobalHelpers.h" />
+		<Unit filename="Logger.cpp" />
+		<Unit filename="Logger.h" />
+		<Unit filename="SocketHandler.cpp" />
+		<Unit filename="SocketHandler.h" />
+		<Unit filename="boxrunner.cpp" />
+		<Unit filename="boxrunner.h" />
+		<Unit filename="compiler.cpp" />
+		<Unit filename="compiler.h" />
+		<Unit filename="config.cpp" />
+		<Unit filename="config.h" />
+		<Unit filename="player.cpp" />
+		<Unit filename="player.h" />
+		<Unit filename="sandbox.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />
