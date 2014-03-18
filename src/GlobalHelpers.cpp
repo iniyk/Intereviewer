@@ -1,6 +1,6 @@
 #include "GlobalHelpers.h"
 
-using namespace Intereviwer;
+namespace Intereviwer{
 
 /**
  * Convert an integer to a String
@@ -62,7 +62,7 @@ const String currentDate() {
  * @param removeAppendedNull    Where to remove the appended empty strings
  * @return Splitted String
  */
-StrVector split(const String &str, char delim, bool removeAppendedNull = true) {
+StrVector split(const String &str, char delim, bool removeAppendedNull) {
     StrVector elems;
     std::stringstream ss(str);
     String item;
@@ -104,7 +104,7 @@ String loadAllFromFile(String filename) {
     return res;
 }
 
-void seperate(const String &str, StrVector &res, char sep = ' ') {
+void seperate(const String &str, StrVector &res, char sep) {
     int len = str.length();
     char buffer[MAX_STR_LENGTH];
     int now = 0;
@@ -161,7 +161,7 @@ unsigned long ts2ms(struct timespec ts) {
 }
 
 /* convert syscall_t to 15bit sc_table index */
-int16_t sc2idx(syscall_t scinfo) {
+int16_t sc2idx(const syscall_t &scinfo) {
 #ifdef __x86_64__
     assert((scinfo.scno >= 0) && (scinfo.scno < 1024) &&
         (scinfo.mode >= 0) && (scinfo.mode < 32));
@@ -180,4 +180,34 @@ int16_t abi32(int scno) {
 #else /* __i386__ */
     return (int16_t)(scno);
 #endif /* __x86_64__ */
+}
+
+
+void policy(const policy_t* pp, const event_t* pe, action_t* pa)
+{
+    assert(pp && pe && pa);
+    const minisbox_t* pmsb = (const minisbox_t*)pp->data;
+    /* handle SYSCALL/SYSRET events with local rules */
+    if ((pe->type == S_EVENT_SYSCALL) || (pe->type == S_EVENT_SYSRET))
+    {
+        const syscall_t scinfo = *(const syscall_t*)&(pe->data._SYSCALL.scinfo);
+        pmsb->sc_table[sc2idx(scinfo)](&pmsb->sbox, pe, pa);
+        return;
+    }
+    /* bypass other events to the default poicy */
+    ((policy_entry_t)pmsb->default_policy.entry)(&pmsb->default_policy, pe, pa);
+}
+
+action_t* _CONT(const sandbox_t* psbox, const event_t* pe, action_t* pa)
+{
+    *pa = (action_t){S_ACTION_CONT}; /* continue */
+    return pa;
+}
+
+action_t* _KILL_RF(const sandbox_t* psbox, const event_t* pe, action_t* pa)
+{
+    *pa = (action_t){S_ACTION_KILL, {{S_RESULT_RF}}}; /* restricted func. */
+    return pa;
+}
+
 }

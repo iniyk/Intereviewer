@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <assert.h>
+#include <stdlib.h>
 
 #include <map>
 #include <string>
@@ -41,7 +42,6 @@
 #include <arpa/inet.h>
 
 #include "Exception.h"
-
 #include "sandbox.h"
 
 namespace Intereviwer{
@@ -66,7 +66,7 @@ namespace Intereviwer{
     int limitstring2resource(const String &limit_str);
     inline bool alphaornumber(char x);
     unsigned long ts2ms(struct timespec ts);
-    int16_t sc2idx(syscall_t scinfo);
+    int16_t sc2idx(const syscall_t &scinfo);
     int16_t abi32(int scno);
 
     String loadAllFromFile(String);
@@ -77,11 +77,26 @@ namespace Intereviwer{
     StrVector split(const String &, char, bool = true);
 
     //typedef Dispatcher::Logger DLogger;
-    //typedef Dispatcher::Exception DException;
+    typedef Dispatcher::Exception DException;
     //typedef Dispatcher::SocketHandler DSocketHandler;
 
     #define LOG DLogger::Getinstance()->log
     #define LOGGER DLogger::Getinstance()
+
+    typedef action_t* (*rule_t)(const sandbox_t*, const event_t*, action_t*);
+    typedef struct {
+       sandbox_t sbox;
+       policy_t default_policy;
+       rule_t sc_table[MAX_INT64 + 1];
+    } minisbox_t;
+    typedef enum {
+        P_ELAPSED = 0, P_CPU = 1, P_MEMORY = 2,
+    } probe_t;
+    //Sandbox Function
+    res_t probe(const sandbox_t* psbox, probe_t key);
+    void policy(const policy_t*, const event_t*, action_t*);
+    action_t* _KILL_RF(const sandbox_t*, const event_t*, action_t*);
+    action_t* _CONT(const sandbox_t*, const event_t*, action_t*);
 }
 
 #endif	/* GLOBALHELPERS_H */
