@@ -149,7 +149,7 @@ int limitstring2resource(const String &limit_str) {
     }
 }
 
-inline bool alphaornumber(char x) {
+bool alphaornumber(char x) {
     if (x>='a' && x<='z') return true;
     if (x>='A' && x<='Z') return true;
     if (x>='0' && x<='9') return true;

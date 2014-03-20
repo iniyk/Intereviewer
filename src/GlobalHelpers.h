@@ -64,7 +64,7 @@ namespace Intereviwer{
     void seperate(const String &str, StrVector &res, char sep = ' ');
     String int2string(int x);
     int limitstring2resource(const String &limit_str);
-    inline bool alphaornumber(char x);
+    bool alphaornumber(char x);
     unsigned long ts2ms(struct timespec ts);
     int16_t sc2idx(const syscall_t &scinfo);
     int16_t abi32(int scno);

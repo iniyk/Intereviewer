@@ -7,7 +7,7 @@
 
 #include "Logger.h"
 
-using namespace Dispatcher;
+namespace Dispatcher {
 
 Logger* Logger::instance = new Logger;
 pthread_mutex_t Logger::log_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -71,4 +71,5 @@ void Logger::addIdentifier(pthread_t pt, string id) {
  */
 void Logger:: eraseIdentifier(pthread_t pt) {
     identifier.erase(pt);
+}
 }

@@ -1,6 +1,6 @@
-#include "config.h"
+#include "Config.h"
 
-using namespace Intereviwer;
+namespace Intereviwer{
 
 Config::Config() {
     data.clear();
@@ -25,7 +25,7 @@ int Config::init(const String &file_path) {
     while (fgets(buffer, MAX_STR_LENGTH, ini_file) != NULL) {
         int len = 0, tot = strlen(buffer);
         for (int i=0; i<tot; ++i) {
-            if (buffer[i]==' ' || buffer[i] == '\r' || buffer == '\n') {
+            if (buffer[i]==' ' || buffer[i] == '\r' || buffer[i] == '\n') {
                 ;
             } else if (buffer[i] == ';' || buffer[i] == '#') {
                 break;
@@ -101,4 +101,5 @@ int Config::selectSection(const String &section) {
 
 String Config::getConfig(const String &par) {
     return data[now_section_id].entry[par];
+}
 }
