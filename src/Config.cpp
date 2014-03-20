@@ -100,6 +100,7 @@ int Config::selectSection(const String &section) {
 }
 
 String Config::getConfig(const String &par) {
+    if (data[now_section_id].entry.count(par) == 0) return "";
     return data[now_section_id].entry[par];
 }
 }

@@ -37,10 +37,24 @@
 #include <sys/socket.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
+#include <sys/signal.h>
+#include <sys/ptrace.h>
+#include <sys/syscall.h>
+#include <sys/user.h>
+#include <sys/stat.h>
+
+#include <netinet/in.h>
+
+#include <arpa/inet.h>
+
+#include <errno.h>
+#include <netdb.h>
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#include "Logger.h"
+//#include "SocketHandler.h"
 #include "Exception.h"
 #include "sandbox.h"
 
@@ -70,13 +84,14 @@ namespace Intereviwer{
     int16_t abi32(int scno);
 
     String loadAllFromFile(String);
-    String intToString(int);
+    String Inttostring(int);
     int stringToInt(String);
+    bool trans2bool(String);
     const String currentDateTime();
     const String currentDate();
     StrVector split(const String &, char, bool = true);
 
-    //typedef Dispatcher::Logger DLogger;
+    typedef Dispatcher::Logger DLogger;
     typedef Dispatcher::Exception DException;
     //typedef Dispatcher::SocketHandler DSocketHandler;
 

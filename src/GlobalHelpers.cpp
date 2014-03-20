@@ -7,7 +7,7 @@ namespace Intereviwer{
  * @param i     The integer
  * @return      The converted String
  */
-String intToString(int i) {
+String Inttostring(int i) {
     char str[15];
     sprintf(str, "%d", i);
     return (String)str;
@@ -122,6 +122,13 @@ void seperate(const String &str, StrVector &res, char sep) {
             buffer[now++] = str[i];
         }
     }
+}
+
+bool trans2bool(String s) {
+    if (s == "0" || s=="false") {
+        return false;
+    }
+    return true;
 }
 
 String int2string(int x) {

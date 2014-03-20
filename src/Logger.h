@@ -8,11 +8,20 @@
 #ifndef LOGGER_H
 #define	LOGGER_H
 
-#include "GlobalHelpers.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/time.h>
+#include <pthread.h>
+
+#include <string>
+#include <vector>
+#include <map>
 
 namespace Dispatcher{
     using namespace std;
-    using namespace Intereviwer;
+    //using namespace Intereviwer;
 
     class Logger
     {

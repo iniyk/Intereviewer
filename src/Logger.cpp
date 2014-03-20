@@ -6,6 +6,7 @@
  */
 
 #include "Logger.h"
+#include "GlobalHelpers.h"
 
 namespace Dispatcher {
 
@@ -35,8 +36,8 @@ void Logger::log(char* msg) {
 }
 
 void Logger::log(string msg) {
-    string filename = LOG_DIRECTORY + name_prefix + currentDate() + ".log";
-    vector <string> messages = split(msg, '\n');
+    string filename = LOG_DIRECTORY + name_prefix + Intereviwer::currentDate() + ".log";
+    vector <string> messages = Intereviwer::split(msg, '\n');
 
     pthread_mutex_lock(&log_mutex);
 
@@ -48,7 +49,7 @@ void Logger::log(string msg) {
 
     string id = identifier.find(pthread_self()) == identifier.end() ? "Main" : identifier[pthread_self()];
     for (vector <string>::iterator it = messages.begin(); it != messages.end(); ++it) {
-        fprintf(fp, "%s %s[%llu]: %s\n", currentDateTime().c_str(), id.c_str(), (unsigned long long)pthread_self() % 10000, it -> c_str());
+        fprintf(fp, "%s %s[%llu]: %s\n", Intereviwer::currentDateTime().c_str(), id.c_str(), (unsigned long long)pthread_self() % 10000, it -> c_str());
     }
 
     fclose(fp);
