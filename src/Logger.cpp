@@ -12,7 +12,7 @@ namespace Dispatcher {
 
 Logger* Logger::instance = new Logger;
 pthread_mutex_t Logger::log_mutex = PTHREAD_MUTEX_INITIALIZER;
-const string Logger::LOG_DIRECTORY = "log/";
+const string Logger::LOG_DIRECTORY = "~/IntereiwerStage/log/";
 
 Logger::Logger() {
     //ctor
@@ -36,8 +36,8 @@ void Logger::log(char* msg) {
 }
 
 void Logger::log(string msg) {
-    string filename = LOG_DIRECTORY + name_prefix + Intereviwer::currentDate() + ".log";
-    vector <string> messages = Intereviwer::split(msg, '\n');
+    string filename = LOG_DIRECTORY + name_prefix + Intereviewer::currentDate() + ".log";
+    vector <string> messages = Intereviewer::split(msg, '\n');
 
     pthread_mutex_lock(&log_mutex);
 
@@ -49,7 +49,7 @@ void Logger::log(string msg) {
 
     string id = identifier.find(pthread_self()) == identifier.end() ? "Main" : identifier[pthread_self()];
     for (vector <string>::iterator it = messages.begin(); it != messages.end(); ++it) {
-        fprintf(fp, "%s %s[%llu]: %s\n", Intereviwer::currentDateTime().c_str(), id.c_str(), (unsigned long long)pthread_self() % 10000, it -> c_str());
+        fprintf(fp, "%s %s[%llu]: %s\n", Intereviewer::currentDateTime().c_str(), id.c_str(), (unsigned long long)pthread_self() % 10000, it -> c_str());
     }
 
     fclose(fp);

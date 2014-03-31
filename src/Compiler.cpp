@@ -1,70 +1,60 @@
 #include "Compiler.h"
 
-namespace Intereviwer{
-	int Compiler::Setup(Config &config) {
-		lv.clear();
+namespace Intereviewer{
+        Compiler::Compiler() {
+            lv.clear();
+        }
+        
+        Compiler::~Compiler() {
+            lv.clear();
+        }
+        
+        int Compiler::Setup(INI::Parser &config) {
+                lv.clear();
 
-		int status = config.selectSection("Compiler");
-		if (status == 0) {
-			compile_time_limit = stringToInt(config.getConfig("compile_time_limit"));
-			compile_file_size_limit = stringToInt(config.getConfig("compiler_file_size_limit"));
-			output_folder = config.getConfig("output_folder");
-			cinfo_folder = config.getConfig("cinfo_folder");
+                compile_time_limit = stringToInt(config.top()("Player")("Compiler")["compile_time_limit"]);
+                compile_file_size_limit = stringToInt(config.top()("Player")("Compiler")["compiler_file_size_limit"]);
+                output_folder = config.top()("Player")("Compiler")["output_folder"];
+                cinfo_folder =config.top()("Player")("Compiler")["cinfo_folder"];
 
-		} else {
-			LOG("error : config missing secion Compiler.");
-			return -2;
-		}
 
-		int ret = regist_language(config);
+                int ret = regist_language(config);
 
-		return ret;
-	}
+                return ret;
+        }
 
-	int Compiler::regist_language(Config &config) {
-		int status = config.selectSection("LanguageRegister");
-		if (status == 0) {
-			String lang_list = config.getConfig("lang_list");
-			StrVector lang_list_array = split(lang_list, ' ', true);
-			int sz = (int)lang_list_array.size();
-			for (int i=0; i<sz; ++i) {
-				regist_one_lang(config, lang_list_array[i]);
-			}
-		} else {
-			LOG("error : config language list don't exist.");
-			return -1;
-		}
-		return 0;
-	}
+        int Compiler::regist_language(INI::Parser &config) {
+                String lang_list = config.top()("Player")("LanguageRegister")["lang_list"];
+                StrVector lang_list_array = split(lang_list, ' ', true);
+                int sz = (int)lang_list_array.size();
+                for (int i=0; i<sz; ++i) {
+                        regist_one_lang(config, lang_list_array[i]);
+                }
+                return 0;
+        }
+        
+        int Compiler::regist_one_lang(INI::Parser &config, const String &lang) {
+                int sz = (int)lv.size();
+                for (int i=0; i<sz; ++i) {
+                        if (lv[i].lang_name == lang) {
+                                LOG("error : config lang has been rigisted.");
+                                return -2;
+                        }
+                }
 
-	int Compiler::regist_one_lang(Config &config, const String &lang) {
-		int status = config.selectSection(lang);
-		if (status == 0) {
-			int sz = (int)lv.size();
-			for (int i=0; i<sz; ++i) {
-				if (lv[i].lang_name == lang) {
-					LOG("error : config lang has been rigisted.");
-					return -2;
-				}
-			}
+                Language tmp;
+                tmp.lang_name = lang;
+                tmp.compiler_command = config.top()("Player")("LanguageRegister")(lang)["compiler"];
+                tmp.compiler_argv_before = config.top()("Player")("LanguageRegister")(lang)["compile_argv_before"];
+                tmp.compiler_argv_after = config.top()("Player")("LanguageRegister")(lang)["compile_argv_after"];
+                tmp.source_ext = config.top()("Player")("LanguageRegister")(lang)["lang_ext"];
+                tmp.exec_ext = config.top()("Player")("LanguageRegister")(lang)["output_ext"];
+                tmp.auto_output = trans2bool(config.top()("Player")("LanguageRegister")(lang)["auto_output"]);
+                tmp.output_arg = config.top()("Player")("LanguageRegister")(lang)["output_command"];
 
-			Language tmp;
-			tmp.lang_name = lang;
-			tmp.compiler_command = config.getConfig("compiler");
-			tmp.compiler_argv_before = config.getConfig("compile_argv_before");
-			tmp.compiler_argv_after = config.getConfig("compile_argv_after");
-			tmp.source_ext = config.getConfig("lang_ext");
-			tmp.exec_ext = config.getConfig("output_ext");
-			tmp.auto_output = trans2bool(config.getConfig("auto_output"));
-			tmp.output_arg = config.getConfig("output_command");
-
-			lv.push_back(tmp);
-		} else {
-			LOG("error : config lang section don't exist.");
-			return -1;
-		}
-		return 0;
-	}
+                lv.push_back(tmp);
+                return 0;
+        }
 
 	int Compiler::get_lang_id(const String &target_path) {
 		StrVector tmp = split(target_path, '.', true);
@@ -83,6 +73,7 @@ namespace Intereviwer{
 	}
 
 	int Compiler::run_compile(const String &command) {
+            printf("%s\n", command.c_str());
 		struct rlimit compile_limit;
 
 		pid_t cpid = fork();
@@ -145,9 +136,12 @@ namespace Intereviwer{
 				slash = i;
 			}
 		}
+#ifdef __DEBUG__
+                printf("Slash %d  dot %d\n", slash, dot);
+#endif
 		for (int i=slash+1; i<dot; ++i) {
 			char buffer[MAX_FILE_PATH];
-			int len = target_path.copy(buffer, slash+2, dot - slash - 1);
+			int len = target_path.copy(buffer, dot - slash -1, slash+1);
 			buffer[len] = 0;
 			file_name = buffer;
 		}
@@ -166,8 +160,10 @@ namespace Intereviwer{
 
 		command += target_path;
 		command += " ";
-
-		String output_path = output_folder + file_name + lv[lang_id].exec_ext;
+#ifdef __DEBUG__
+                printf("FILE_NAME : %s\n", file_name.c_str());
+#endif
+		String output_path = output_folder + file_name + "." +  lv[lang_id].exec_ext;
 		if (!lv[lang_id].auto_output) {
 			command += lv[lang_id].output_arg + " " + output_path;
 			command += " ";

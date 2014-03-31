@@ -58,7 +58,11 @@
 #include "Exception.h"
 #include "sandbox.h"
 
-namespace Intereviwer{
+#ifdef __DEBUG__
+#include <cstdio>
+#endif
+
+namespace Intereviewer{
     typedef std::string String;
     typedef std::vector<String> StrVector;
 
@@ -73,7 +77,7 @@ namespace Intereviwer{
     const int AUTO_TIME_LIMIT = 3000;           //3sec
     const int HANDSHAKE_TIMEOUT = 5000;         //5sec
 
-    const String config_file_path("/etc/Judger/Judger.conf");
+    const String config_file_path("~/IntereiwerStage/Judger.ini");
 
     void seperate(const String &str, StrVector &res, char sep = ' ');
     String int2string(int x);
@@ -90,13 +94,15 @@ namespace Intereviwer{
     const String currentDateTime();
     const String currentDate();
     StrVector split(const String &, char, bool = true);
+    
+    void LOG(String msg);
 
     typedef Dispatcher::Logger DLogger;
     typedef Dispatcher::Exception DException;
     //typedef Dispatcher::SocketHandler DSocketHandler;
 
-    #define LOG DLogger::Getinstance()->log
-    #define LOGGER DLogger::Getinstance()
+    //#define LOG log
+    //#define LOGGER DLogger::Getinstance()
 
     typedef action_t* (*rule_t)(const sandbox_t*, const event_t*, action_t*);
     typedef struct {

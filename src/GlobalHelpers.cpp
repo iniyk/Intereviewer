@@ -1,6 +1,6 @@
 #include "GlobalHelpers.h"
 
-namespace Intereviwer{
+namespace Intereviewer{
 
 /**
  * Convert an integer to a String
@@ -160,6 +160,7 @@ bool alphaornumber(char x) {
     if (x>='a' && x<='z') return true;
     if (x>='A' && x<='Z') return true;
     if (x>='0' && x<='9') return true;
+    if (x=='_' || x=='-') return true;
     return false;
 }
 
@@ -215,6 +216,14 @@ action_t* _KILL_RF(const sandbox_t* psbox, const event_t* pe, action_t* pa)
 {
     *pa = (action_t){S_ACTION_KILL, {{S_RESULT_RF}}}; /* restricted func. */
     return pa;
+}
+
+void LOG(String msg) {
+        FILE* log_file = fopen ("/home/iniyk/IntereiwerStage/log/log.log", "w");
+        if (log_file != NULL) {
+                String output = currentDateTime () +" "+ msg;
+                fprintf(log_file, "%s\n", output.c_str ());
+        }
 }
 
 }

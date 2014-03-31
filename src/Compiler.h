@@ -2,9 +2,9 @@
 #define _JUDGER_COMPILER_
 
 #include "GlobalHelpers.h"
-#include "Config.h"
+#include "ini.hpp"
 
-namespace Intereviwer{
+namespace Intereviewer{
 	struct Language
 	{
 		String lang_name;
@@ -25,7 +25,7 @@ namespace Intereviwer{
 		Compiler();
 		virtual ~Compiler();
 		
-		int Setup(Config &config);
+		int Setup(INI::Parser &config);
 		int Compile(const String &target_path, const String &run_id);
 	private:
 		int compile_time_limit;
@@ -35,8 +35,8 @@ namespace Intereviwer{
 		
 		LangVector lv;
 
-		int regist_language(Config &config);
-		int regist_one_lang(Config &config, const String &lang);
+		int regist_language(INI::Parser &config);
+		int regist_one_lang(INI::Parser &config, const String &lang);
 		int get_lang_id(const String &target_path);
 		int run_compile(const String &command);
 		String get_file_name(const String &target_path);

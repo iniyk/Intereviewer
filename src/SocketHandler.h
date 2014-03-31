@@ -12,7 +12,7 @@
 
 namespace Dispatcher{
     using namespace std;
-    using namespace Intereviwer;
+    using namespace Intereviewer;
 
     class SocketHandler {
     public:
