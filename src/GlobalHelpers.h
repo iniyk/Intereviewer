@@ -63,6 +63,17 @@
 #endif
 
 namespace Intereviewer{
+#ifndef INT16_MAX
+#define INT16_MAX (32767)
+#endif /* INT16_MAX */
+    const int ERROR_WHILE_USING_SYSTEM_API = 4;
+    const int ERROR_WHILE_INIT_DATA_STRUCT = 3;
+    const int ERROR_WHILE_LOAD_FILE = 2;
+    const int ERROR_WHILE_FORK_PROCESS = 1;
+    const int SUCCESS_RETURN = 0;
+    
+    typedef int Status;
+    
     typedef std::string String;
     typedef std::vector<String> StrVector;
 

@@ -226,4 +226,21 @@ void LOG(String msg) {
         }
 }
 
+res_t probe(const sandbox_t* psbox, probe_t key)
+{
+    switch (key)
+    {
+    case P_ELAPSED:
+        return ts2ms(psbox->stat.elapsed);
+    case P_CPU:
+        return ts2ms(psbox->stat.cpu_info.clock);
+    case P_MEMORY:
+        return psbox->stat.mem_info.vsize_peak / 1024;
+    default:
+        break;
+    }
+    return 0;
+}
+
+
 }

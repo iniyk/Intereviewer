@@ -14,8 +14,8 @@ namespace Intereviewer{
 
                 compile_time_limit = stringToInt(config.top()("Player")("Compiler")["compile_time_limit"]);
                 compile_file_size_limit = stringToInt(config.top()("Player")("Compiler")["compiler_file_size_limit"]);
-                output_folder = config.top()("Player")("Compiler")["output_folder"];
-                cinfo_folder =config.top()("Player")("Compiler")["cinfo_folder"];
+                //output_folder = config.top()("Player")("Compiler")["output_folder"];
+                //cinfo_folder =config.top()("Player")("Compiler")["cinfo_folder"];
 
 
                 int ret = regist_language(config);
@@ -128,7 +128,7 @@ namespace Intereviewer{
 
 	String Compiler::get_file_name(const String &target_path) {
 		String file_name = "";
-		int dot, slash;
+		int dot, slash = -1;
 		for (int i=0; i<(int)target_path.length(); ++i) {
 			if (target_path[i]=='.') {
 				dot = i;
@@ -148,7 +148,7 @@ namespace Intereviewer{
 		return file_name;
 	}
 
-	String Compiler::get_compile_command(const String &target_path, const String &run_id) {
+	String Compiler::get_compile_command(const String &target_path) {
 		String command = "";
 		int lang_id = get_lang_id(target_path);
 		String file_name = get_file_name(target_path);
@@ -163,19 +163,19 @@ namespace Intereviewer{
 #ifdef __DEBUG__
                 printf("FILE_NAME : %s\n", file_name.c_str());
 #endif
-		String output_path = output_folder + file_name + "." +  lv[lang_id].exec_ext;
+		String output_path = file_name + "." +  lv[lang_id].exec_ext;
 		if (!lv[lang_id].auto_output) {
 			command += lv[lang_id].output_arg + " " + output_path;
 			command += " ";
 		}
 		command += lv[lang_id].compiler_argv_after;
 		command += " ";
-		command += "2>"+cinfo_folder+run_id+".log";
+		command += "2>compile.log";
 		return command;
 	}
 
-	int Compiler::Compile(const String &target_path, const String &run_id) {
-		String command = get_compile_command(target_path, run_id);
+	int Compiler::Compile(const String &target_path) {
+		String command = get_compile_command(target_path);
 		int ret = run_compile(command);
 		return ret;
 	}

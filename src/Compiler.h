@@ -26,7 +26,7 @@ namespace Intereviewer{
 		virtual ~Compiler();
 		
 		int Setup(INI::Parser &config);
-		int Compile(const String &target_path, const String &run_id);
+		int Compile(const String &target_path);
 	private:
 		int compile_time_limit;
 		int compile_file_size_limit;
@@ -40,7 +40,7 @@ namespace Intereviewer{
 		int get_lang_id(const String &target_path);
 		int run_compile(const String &command);
 		String get_file_name(const String &target_path);
-		String get_compile_command(const String &target_path, const String &run_id);
+		String get_compile_command(const String &target_path);
 	};
 }
 

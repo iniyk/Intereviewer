@@ -18,7 +18,7 @@
 namespace INI {
 
     struct Level {
-
+        
         Level() : parent(NULL), depth(0) {
         }
 
@@ -37,6 +37,7 @@ namespace INI {
         size_t depth;
 
         const std::string& operator[](const std::string& name) {
+            if (values.count(name) == 0) return *(new std::string(""));
             return values[name];
         }
 
