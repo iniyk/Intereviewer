@@ -156,6 +156,28 @@ int limitstring2resource(const String &limit_str) {
     }
 }
 
+String get_filename_main(const String &str) {
+        String file_name = "";
+        int dot, slash = -1;
+        for (int i=0; i<(int)str.length(); ++i) {
+                if (str[i]=='.') {
+                        dot = i;
+                } else if (str[i]=='/') {
+                        slash = i;
+                }
+        }
+#ifdef __DEBUG__
+        printf("Slash %d  dot %d\n", slash, dot);
+#endif
+        for (int i=slash+1; i<dot; ++i) {
+                char buffer[MAX_FILE_PATH];
+                int len = str.copy(buffer, dot - slash -1, slash+1);
+                buffer[len] = 0;
+                file_name = buffer;
+        }
+        return file_name;
+}
+
 bool alphaornumber(char x) {
     if (x>='a' && x<='z') return true;
     if (x>='A' && x<='Z') return true;
@@ -242,5 +264,42 @@ res_t probe(const sandbox_t* psbox, probe_t key)
     return 0;
 }
 
+int decode_message(char* str, String &reserve_word, String &message) {
+    int len = strlen(str);
+    char tmp[MAX_STR_LENGTH];
+    int cnt = 0, flag = 0;
+    
+    for (int i=0; i<len; ++i) {
+        if (str[i] == ']') {
+            flag = 0;
+            tmp[cnt] = 0;
+            reserve_word = String(tmp);
+            message = String(&str[i+1]);
+            return 0;
+        }
+        if (flag==1) {
+            tmp[cnt++] = str[i];
+        }
+        if (str[i] == '[') {
+            flag = 1;
+        }
+    }
+    return -1;
+}
+int decode_message(char* str, String &reserve_word, String &message,
+                                        String &target_player, String &play_ground) {
+    char tmp_player_name[MAX_STR_LENGTH];
+    char tmp_play_ground[MAX_STR_LENGTH];
+    sscanf("%s %*s %s", tmp_player_name, tmp_play_ground);
+    target_player = String(tmp_player_name);
+    play_ground = StrVector(tmp_play_ground);
+    int len = strlen(str);
+    for (int i=0; i<len; ++i) {
+        if (str[i]==':') {
+            return (&str[i+1], reserve_word, message);
+        }
+    }
+    return -1;
+}
 
 }

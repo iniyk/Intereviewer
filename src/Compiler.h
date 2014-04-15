@@ -27,6 +27,7 @@ namespace Intereviewer{
 		
 		int Setup(INI::Parser &config);
 		int Compile(const String &target_path);
+                         String get_lang_name(const String &target_path);
 	private:
 		int compile_time_limit;
 		int compile_file_size_limit;

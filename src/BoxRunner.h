@@ -22,7 +22,7 @@ namespace Intereviewer {
 
         void Setup(INI::Parser &_config);
         Status StartUp(const String &target,
-                                        int fd_in, int fd_out,
+                                        int fd_in[], int fd_out[],
                                         const String &lang,
                                         int time_limit_all = 0, int memory_limit = 0);
         Status EndUp();

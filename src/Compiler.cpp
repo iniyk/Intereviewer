@@ -179,5 +179,10 @@ namespace Intereviewer{
 		int ret = run_compile(command);
 		return ret;
 	}
+        
+            String Compiler::get_lang_name(const String &target_path) {
+                int id = get_lang_id(target_path);
+                return lv[id].lang_name;
+            }
 
 }

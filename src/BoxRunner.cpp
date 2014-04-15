@@ -80,8 +80,8 @@ namespace Intereviewer{
         printf("\n");
 #endif
         
-        msb.sbox.task.ifd = fd_in;  
-        msb.sbox.task.ofd = fd_out; 
+        msb.sbox.task.ifd = fd_in[0];  
+        msb.sbox.task.ofd = fd_out[1]; 
         msb.sbox.task.efd = fd_error; 
         msb.sbox.task.quota[S_QUOTA_WALLCLOCK] = time_limit_all * wall_clock_rate; 
         msb.sbox.task.quota[S_QUOTA_CPU] = time_limit_all;       
@@ -96,6 +96,8 @@ namespace Intereviewer{
         if (box_pid == -1) {
             return ERROR_WHILE_FORK_PROCESS;
         } else if (box_pid == 0) {
+            close(fd_in[[1]]);
+            close(fd_out[0]);
             usleep(50000);
             
             result_t res = *sandbox_execute(&msb.sbox);
@@ -113,8 +115,8 @@ namespace Intereviewer{
             close(fd_error);
             exit(0);
         } else {
-            close(fd_in);
-            close(fd_out);
+            close(fd_in[0]);
+            close(fd_out[1]);
             close(fd_error);
             return SUCCESS_RETURN;
         }
