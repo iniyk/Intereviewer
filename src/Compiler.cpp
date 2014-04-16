@@ -73,7 +73,7 @@ namespace Intereviewer{
 	}
 
 	int Compiler::run_compile(const String &command) {
-            printf("%s\n", command.c_str());
+            //printf("%s\n", command.c_str());
 		struct rlimit compile_limit;
 
 		pid_t cpid = fork();
@@ -136,9 +136,6 @@ namespace Intereviewer{
 				slash = i;
 			}
 		}
-#ifdef __DEBUG__
-                printf("Slash %d  dot %d\n", slash, dot);
-#endif
 		for (int i=slash+1; i<dot; ++i) {
 			char buffer[MAX_FILE_PATH];
 			int len = target_path.copy(buffer, dot - slash -1, slash+1);
@@ -160,9 +157,6 @@ namespace Intereviewer{
 
 		command += target_path;
 		command += " ";
-#ifdef __DEBUG__
-                printf("FILE_NAME : %s\n", file_name.c_str());
-#endif
 		String output_path = file_name + "." +  lv[lang_id].exec_ext;
 		if (!lv[lang_id].auto_output) {
 			command += lv[lang_id].output_arg + " " + output_path;

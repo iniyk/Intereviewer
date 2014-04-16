@@ -166,9 +166,7 @@ String get_filename_main(const String &str) {
                         slash = i;
                 }
         }
-#ifdef __DEBUG__
-        printf("Slash %d  dot %d\n", slash, dot);
-#endif
+
         for (int i=slash+1; i<dot; ++i) {
                 char buffer[MAX_FILE_PATH];
                 int len = str.copy(buffer, dot - slash -1, slash+1);
@@ -292,11 +290,11 @@ int decode_message(char* str, String &reserve_word, String &message,
     char tmp_play_ground[MAX_STR_LENGTH];
     sscanf("%s %*s %s", tmp_player_name, tmp_play_ground);
     target_player = String(tmp_player_name);
-    play_ground = StrVector(tmp_play_ground);
+    play_ground = String(tmp_play_ground);
     int len = strlen(str);
     for (int i=0; i<len; ++i) {
         if (str[i]==':') {
-            return (&str[i+1], reserve_word, message);
+            return decode_message(&str[i+1], reserve_word, message);
         }
     }
     return -1;

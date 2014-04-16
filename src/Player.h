@@ -9,7 +9,9 @@
 #define	PLAYER_H
 
 #include <unistd.h>
+#include <time.h>
 
+#include "GlobalHelpers.h"
 #include "Compiler.h"
 #include "BoxRunner.h"
 
@@ -25,20 +27,30 @@ namespace Intereviewer{
                                const String &work_folder, const String &source_file, bool reviewer,
                                int time_limit_all, int memory_limit, int time_limit_per);
     private:
+        INI::Parser* config;
+        Compiler compiler;
+        BoxRunner boxrunner;
+        
         bool reviewer;
         String play_ground, player_name;
-        String lang_name;
-        StrVector player_list;
-        String reviewer_name;
-        INI::Parser* config;
-        pid_t send_proc;
+        String lang_name, source_file;
         char buffer_rd[MAX_STR_LENGTH], buffer_wt[MAX_STR_LENGTH];
+        int pipe_rd[2], pipe_wt[2];
         
-        Status reply_request_line(const String &asker);
-        Status shut_down(const String &asker, const String &last_word);
+        StrVector player_list;
+        pid_t send_proc;
         
-        Status request_line(const String &target);
-        Status end_game(const String &judger);
+        String reviewer_name;
+        pid_t read_proc;
+        int time_limit_all, memory_limit, time_limit_per;
+        
+        Status compile();
+        
+        Status reviewer_code();
+        
+        Status normal_player_code();
+        
+        bool checkAlive();
     };
 }
 

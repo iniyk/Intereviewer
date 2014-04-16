@@ -37,6 +37,7 @@ namespace Intereviewer {
         minisbox_t msb;
         StrVector arg_vector;
         char* argv[MAX_ARG_NUMBER];
+        int running_status;
 
         void setup_policy();
     };

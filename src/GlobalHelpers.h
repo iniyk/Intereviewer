@@ -89,7 +89,7 @@ namespace Intereviewer{
     const int AUTO_TIME_LIMIT = 3000;           //3sec
     const int HANDSHAKE_TIMEOUT = 5000;         //5sec
 
-    const String config_file_path("~/IntereiwerStage/Judger.ini");
+    const String config_file_path("/home/iniyk/IntereviewerStage/Judger.ini");
 
     void seperate(const String &str, StrVector &res, char sep = ' ');
     String int2string(int x);
