@@ -24,8 +24,8 @@ namespace Intereviewer{
     
     Status Player::compile() {
         compiler.Setup(*config);
-        printf("Source File : %s\n", source_file.c_str());
-        printf("Working Folder : %s\n", getcwd(NULL, NULL));
+        //printf("Source File : %s\n", source_file.c_str());
+        //printf("Working Folder : %s\n", getcwd(NULL, NULL));
         Status ret = compiler.Compile(source_file);
         
         lang_name = compiler.get_lang_name(source_file);
@@ -33,7 +33,7 @@ namespace Intereviewer{
     }
     
     bool Player::checkAlive() {
-        return (bool)boxrunner.GetStatus();
+        return boxrunner.GetStatus();
     }
     
     Status Player::reviewer_code() {
@@ -57,7 +57,8 @@ namespace Intereviewer{
         } else if (send_proc == 0) {
             close(pipe_wt[1]);
             while (true) {
-                int sz = (int)read(pipe_rd[0], buffer_rd, sizeof(buffer_rd));
+                //int sz = (int)read(pipe_rd[0], buffer_rd, sizeof(buffer_rd));
+                int sz = get_line_from_pipe(pipe_rd[0], buffer_rd);
                 buffer_rd[sz] = 0;
                 printf("%s", buffer_rd);
             }
@@ -94,11 +95,14 @@ namespace Intereviewer{
             gets(buffer_rd);
             decode_message(buffer_rd, reserve_word, message);
             
-            if (!checkAlive()) {
+            //if (false) {
+            if (this->checkAlive() == false) {
+                printf("COMMAND : %s\n", buffer_rd);
                 if (reserve_word.compare("end_of_a_game") == 0) {
                     boxrunner.EndUp();
                     return SUCCESS_RETURN;
                 } else {
+                    usleep(100000);
                     FILE* result_file = fopen("result.txt", "r");
                     if (result_file == NULL) {
                         printf("@ %s : [judge_error_occurs] no result file found\n", play_ground.c_str());
@@ -119,7 +123,8 @@ namespace Intereviewer{
                         return ERROR_WHILE_FORK_PROCESS;
                     } else if (read_proc == 0) {
                         clock_t start_clock = clock();
-                        int sz = read(pipe_rd[0], buffer_rd, sizeof(buffer_rd));
+                        //int sz = read(pipe_rd[0], buffer_rd, sizeof(buffer_rd));
+                        int sz = get_line_from_pipe(pipe_rd[0], buffer_rd);
                         clock_t end_clock = clock();
                         int ms = ( (end_clock - start_clock) * 1000.0) / CLOCKS_PER_SEC;
                         if (ms > time_limit_per) {
@@ -144,14 +149,14 @@ namespace Intereviewer{
                             printf("@ %s : [result_return]TL\n", play_ground.c_str());
                         }
                     }
-                } else if (reserve_word.compare("send_a_line") == 0) {
+                } else if (reserve_word.compare("send_one_line") == 0) {
                     int sz = 0;
                     for (int i=0; i<(int)message.length(); ++i) {
                         buffer_wt[sz++] = message[i];
                     }
                     buffer_wt[sz++] = '\n';
                     buffer_wt[sz] = 0;
-                    printf("Buffer : %s\n", buffer_wt);
+                    //printf("Buffer : %s\n", buffer_wt);
                     write(pipe_wt[1], buffer_wt, sz);
                 } else {
                     printf("@ %s : [judge_error_occurs]no such reserve word\n", play_ground.c_str());
@@ -162,13 +167,14 @@ namespace Intereviewer{
     }
     
     Status Player::StartUp(const String &playername, const String &playground, 
-                               const String &work_folder, const String &_source_file, bool _reviewer,
+                               const String &_source_file, bool _reviewer,
                                 int _time_limit_all, int _memory_limit, int _time_limit_per) {
         
         String working_folder = config->top()("Player")["working_folder"];
         chdir(working_folder.c_str());
-        chdir(work_folder.c_str());
-        printf("Working Folder : %s|\n", working_folder.c_str());
+        chdir(playground.c_str());
+        chdir(playername.c_str());
+        //printf("Working Folder : %s|\n", working_folder.c_str());
         
         reviewer = _reviewer;
         player_name = playername;
@@ -208,35 +214,47 @@ namespace Intereviewer{
 
 using namespace Intereviewer;
 
+//test
+//./intereviewer main.cpp 13212 player01 atuoplayground false 2000 10240000 2000
 //Argv[1] is the name of target source
-//Argv[2] is the working folder contains the target
-//Argv[3] is the player name
-//Argv[4] is the playground string
+//Argv[2] is the player name
+//Argv[3] is the playground string
+//Argv[4] is boolean for whether the player is a reviewer
+//Argv[5] time limit all
+//Argv[6] memory limit all
+//Argv[6] time limit per
 int main(int args, const char* argv[]) {
     Player player;
     INI::Parser config(config_file_path.c_str());
-    printf("Config Path : %s|\n", config_file_path.c_str());
+    //printf("Config Path : %s\n", config_file_path.c_str());
     player.Setup(config);
     String target_source = argv[1];
-    String work_folder = argv[2];
-    String player_name = argv[3];
-    String play_ground = argv[4];
-    String reviewer_str = argv[5];
+    //String work_folder = argv[2];
+    String player_name = argv[2];
+    String play_ground = argv[3];
+    String reviewer_str = argv[4];
     bool reviewer = false;
     if (reviewer_str.compare("true") == 0) {
         reviewer = true;
     }
-    String tmp = argv[6];
+    String tmp = argv[5];
     int time_limit_all = stringToInt(tmp);
-    tmp = argv[7];
+    tmp = argv[6];
     int memory_limit = stringToInt(tmp);
-    tmp = argv[8];
+    tmp = argv[7];
     int time_limit_per = stringToInt(tmp);
     
-    player.StartUp(player_name, play_ground, work_folder, target_source, reviewer, 
+    //printf("%d %d %d\n", time_limit_all, memory_limit, time_limit_per);
+    
+    player.StartUp(player_name, play_ground, target_source, reviewer, 
             time_limit_all, memory_limit, time_limit_per);
     
  
     return 0;
 }
 
+/*
+[reviewer_register]reviewer
+[send_one_line]hello
+[request_one_line]
+ */

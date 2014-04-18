@@ -262,7 +262,7 @@ res_t probe(const sandbox_t* psbox, probe_t key)
     return 0;
 }
 
-int decode_message(char* str, String &reserve_word, String &message) {
+int decode_message(const char* str, String &reserve_word, String &message) {
     int len = strlen(str);
     char tmp[MAX_STR_LENGTH];
     int cnt = 0, flag = 0;
@@ -284,13 +284,20 @@ int decode_message(char* str, String &reserve_word, String &message) {
     }
     return -1;
 }
-int decode_message(char* str, String &reserve_word, String &message,
+int decode_message(const char* str, String &reserve_word, String &message,
                                         String &target_player, String &play_ground) {
     char tmp_player_name[MAX_STR_LENGTH];
     char tmp_play_ground[MAX_STR_LENGTH];
-    sscanf("%s %*s %s", tmp_player_name, tmp_play_ground);
-    target_player = String(tmp_player_name);
-    play_ground = String(tmp_play_ground);
+    sscanf(str, "%s", tmp_player_name);
+    if (strcmp(tmp_player_name, "@") == 0) {
+        sscanf(str, "%*s %s", tmp_play_ground);
+        target_player = "";
+        play_ground = String(tmp_play_ground);
+    } else {
+        sscanf(str, "%s %*s %s", tmp_player_name, tmp_play_ground);
+        target_player = String(tmp_player_name);
+        play_ground = String(tmp_play_ground);
+    }
     int len = strlen(str);
     for (int i=0; i<len; ++i) {
         if (str[i]==':') {
@@ -300,4 +307,46 @@ int decode_message(char* str, String &reserve_word, String &message,
     return -1;
 }
 
+String get_line_from_pipe(int fd) {
+    char buffer[MAX_STR_LENGTH];
+    int sz = 0;
+    while (true) {
+        int cnt = (int)read(fd, &buffer[sz], sizeof(char));
+        if (cnt == 0 || buffer[sz] == '\r' || buffer[sz]=='\n') {
+            if (sz==0) continue;
+            buffer[sz] = 0;
+            return String(buffer);
+        }
+        sz += cnt;
+    }
+    return "";
+}
+
+int get_line_from_pipe(int fd, char* buffer) {
+    int sz = 0;
+    while (true) {
+        int cnt = (int)read(fd, &buffer[sz], sizeof(char));
+        if (cnt == 0 || buffer[sz] == '\r' || buffer[sz]=='\n') {
+            if (sz==0) continue;
+            buffer[sz] = 0;
+            return sz;
+        }
+        sz += cnt;
+    }
+    return 0;
+}
+
+bool pid_running(pid_t pid) {
+    char buffer[MAX_STR_LENGTH];
+    String cmd = "pstree -p " + Inttostring(pid);
+    FILE* status = popen(cmd.c_str(), "r");
+    if (status == NULL) return false;
+    if (fscanf(status, "%s", buffer) == EOF) {
+        pclose(status);
+        return false;
+    } else {
+        pclose(status);
+        return true;
+    }
+}
 }

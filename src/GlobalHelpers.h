@@ -66,6 +66,7 @@ namespace Intereviewer{
 #ifndef INT16_MAX
 #define INT16_MAX (32767)
 #endif /* INT16_MAX */
+    const int ERROR_WHILE_REVIEWER_COMPILE = -6;
     const int ERROR_WHILE_CREATE_PIPE = -5;
     const int ERROR_WHILE_USING_SYSTEM_API = -4;
     const int ERROR_WHILE_INIT_DATA_STRUCT = -3;
@@ -107,9 +108,12 @@ namespace Intereviewer{
     const String currentDate();
     StrVector split(const String &, char, bool = true);
     String get_filename_main(const String &str);
-    int decode_message(char* str, String &reserve_word, String &message);
-    int decode_message(char* str, String &reserve_word, String &message,
+    int decode_message(const char* str, String &reserve_word, String &message);
+    int decode_message(const char* str, String &reserve_word, String &message,
                                         String &target_player, String &play_ground);
+    String get_line_from_pipe(int fd);
+    int get_line_from_pipe(int fd, char* buffer);
+    bool pid_running(pid_t pid);
     
     void LOG(String msg);
 

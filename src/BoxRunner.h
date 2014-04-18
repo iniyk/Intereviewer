@@ -26,10 +26,11 @@ namespace Intereviewer {
                                         const String &lang,
                                         int time_limit_all = 0, int memory_limit = 0);
         Status EndUp();
-        int GetStatus();
+        bool GetStatus();
         pid_t GetPid();
     private:
         StrVector result_name;
+        String target;
         String language;
         std::vector<int16_t> ban_list;
         INI::Parser* config;

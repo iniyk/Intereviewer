@@ -24,7 +24,7 @@ namespace Intereviewer{
         
          void Setup(INI::Parser &_config);
          Status StartUp(const String &playername, const String &playground, 
-                               const String &work_folder, const String &source_file, bool reviewer,
+                               const String &source_file, bool reviewer,
                                int time_limit_all, int memory_limit, int time_limit_per);
     private:
         INI::Parser* config;

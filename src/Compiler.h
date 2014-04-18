@@ -25,21 +25,22 @@ namespace Intereviewer{
 		Compiler();
 		virtual ~Compiler();
 		
-		int Setup(INI::Parser &config);
-		int Compile(const String &target_path);
+		Status Setup(INI::Parser &config);
+		Status Compile(const String &target_path);
                          String get_lang_name(const String &target_path);
 	private:
 		int compile_time_limit;
 		int compile_file_size_limit;
 		String output_folder;
 		String cinfo_folder;
+                          char buffer_rd[MAX_STR_LENGTH];
 		
 		LangVector lv;
 
-		int regist_language(INI::Parser &config);
-		int regist_one_lang(INI::Parser &config, const String &lang);
+		Status regist_language(INI::Parser &config);
+		Status regist_one_lang(INI::Parser &config, const String &lang);
 		int get_lang_id(const String &target_path);
-		int run_compile(const String &command);
+		Status run_compile(const String &command);
 		String get_file_name(const String &target_path);
 		String get_compile_command(const String &target_path);
 	};

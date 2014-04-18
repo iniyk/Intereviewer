@@ -9,7 +9,7 @@ namespace Intereviewer{
             lv.clear();
         }
         
-        int Compiler::Setup(INI::Parser &config) {
+        Status Compiler::Setup(INI::Parser &config) {
                 lv.clear();
 
                 compile_time_limit = stringToInt(config.top()("Player")("Compiler")["compile_time_limit"]);
@@ -23,7 +23,7 @@ namespace Intereviewer{
                 return ret;
         }
 
-        int Compiler::regist_language(INI::Parser &config) {
+        Status Compiler::regist_language(INI::Parser &config) {
                 String lang_list = config.top()("Player")("LanguageRegister")["lang_list"];
                 StrVector lang_list_array = split(lang_list, ' ', true);
                 int sz = (int)lang_list_array.size();
@@ -33,7 +33,7 @@ namespace Intereviewer{
                 return 0;
         }
         
-        int Compiler::regist_one_lang(INI::Parser &config, const String &lang) {
+        Status Compiler::regist_one_lang(INI::Parser &config, const String &lang) {
                 int sz = (int)lv.size();
                 for (int i=0; i<sz; ++i) {
                         if (lv[i].lang_name == lang) {
@@ -56,75 +56,86 @@ namespace Intereviewer{
                 return 0;
         }
 
-	int Compiler::get_lang_id(const String &target_path) {
-		StrVector tmp = split(target_path, '.', true);
-		int sz = (int) tmp.size();
-		String s_ext = tmp[sz-1];
-		sz = (int) lv.size();
-		for (int i=0; i<sz; ++i) {
-			if (lv[i].source_ext == s_ext) {
-				return i;
-			}
-		}
+        int Compiler::get_lang_id(const String &target_path) {
+                StrVector tmp = split(target_path, '.', true);
+                int sz = (int) tmp.size();
+                String s_ext = tmp[sz-1];
+                sz = (int) lv.size();
+                for (int i=0; i<sz; ++i) {
+                        if (lv[i].source_ext == s_ext) {
+                                return i;
+                        }
+                }
 
-		LOG("error : trying to compiler a unregister language.");
+            //LOG("error : trying to compiler a unregister language.");
 
-		return -1;
-	}
+                return -1;
+        }
 
-	int Compiler::run_compile(const String &command) {
-            //printf("%s\n", command.c_str());
-		struct rlimit compile_limit;
+        Status Compiler::run_compile(const String &command) {
+                struct rlimit compile_limit;
 
-		pid_t cpid = fork();
-		if (cpid == -1) {
-			LOG("error : error while fork a process to compile source file.");
-		} else if (cpid == 0) {
-		 	usleep(50000);
-	        setrlimit(RLIMIT_CPU,&compile_limit);
-	        LOG("message : Compile Command: "+command);
-	        int res=system(command.c_str());
-	        exit(0);
-		} else {
-	        LOG("message : Compile Child Process: "+Inttostring(cpid));
-	        LOG("message : Compile time limit: "+Inttostring(compile_time_limit));
-	        int cstat,tused;
-	        struct timeval case_startv,case_nowv;
-	        struct timezone case_startz,case_nowz;
-	        gettimeofday(&case_startv,&case_startz);
-	        int cnt=-1;
-	        while (1) {
-	            usleep(50000);
-	            cnt++;
-	            gettimeofday(&case_nowv,&case_nowz);
-	            tused=case_nowv.tv_sec-case_startv.tv_sec;
-	            if (cnt%20==0) LOG("message : Compiling Used: "+Inttostring(tused));
-	            if (waitpid(cpid,&cstat,WNOHANG)==0) {
-	                if (tused>compile_time_limit) {
-	                    LOG("message : Time too much!");
-	                    LOG("message : kill `pstree -p "+Inttostring(cpid)+" | sed 's/(/\\n(/g' | grep '(' | sed 's/(\\(.*\\)).*/\\1/' | tr \"\\n\" \" \"`");
-	                    system(("kill `pstree -p "+Inttostring(cpid)+" | sed 's/(/\\n(/g' | grep '(' | sed 's/(\\(.*\\)).*/\\1/' | tr \"\\n\" \" \"`").c_str());
-	                    waitpid(cpid,&cstat,0);
-	                    return -2;
-	                }
-	            }
-	            else if (WIFSIGNALED(cstat)&&WTERMSIG(cstat)!=0) {
-	                LOG("message : Something is wrong.");
-	                LOG("message : kill `pstree -p "+Inttostring(cpid)+" | sed 's/(/\\n(/g' | grep '(' | sed 's/(\\(.*\\)).*/\\1/' | tr \"\\n\" \" \"`");
-	                system(("kill `pstree -p "+Inttostring(cpid)+" | sed 's/(/\\n(/g' | grep '(' | sed 's/(\\(.*\\)).*/\\1/' | tr \"\\n\" \" \"`").c_str());
-	                waitpid(cpid,&cstat,0);
-	                return -1;
-	            }
-	            if (WIFEXITED(cstat)) {
-	                waitpid(cpid,&cstat,0);
-	                LOG("message : Compiled");
-	                break;
-	            }
-	        }
-	        system(("kill `pstree -p "+Inttostring(cpid)+" | sed 's/(/\\n(/g' | grep '(' | sed 's/(\\(.*\\)).*/\\1/' | tr \"\\n\" \" \"`").c_str());
-		}
-		return 0;
-	}
+                pid_t cpid = fork();
+                if (cpid == -1) {
+                        return ERROR_WHILE_FORK_PROCESS;
+                } else if (cpid == 0) {
+                        usleep(50000);
+                        setrlimit(RLIMIT_CPU,&compile_limit);
+                        FILE* ret = popen(command.c_str(), "r");
+                        pclose(ret);
+                        exit(0);
+                } else {
+                        String kill_pid = String("pstree -p ")+Inttostring(cpid)+" | sed 's/(/\\n(/g' | grep '(' | sed 's/(\\(.*\\)).*/\\1/' | tr \"\\n\" \" \"";
+                        FILE* pid_getter = popen(kill_pid.c_str(), "r");
+                        fscanf(pid_getter, "%s", buffer_rd);
+                        fclose(pid_getter);
+                        kill_pid = buffer_rd;
+                        //printf("Kill PID : %s\n",kill_pid.c_str());
+                        String kill_command = String("kill ")+kill_pid;
+                        //printf("Kill Command : %s\n",kill_command.c_str());
+                        //LOG("message : Compile Child Process: "+Inttostring(cpid));
+                        //LOG("message : Compile time limit: "+Inttostring(compile_time_limit));
+                        int cstat,tused;
+                        struct timeval case_startv,case_nowv;
+                        struct timezone case_startz,case_nowz;
+                        gettimeofday(&case_startv,&case_startz);
+                        int cnt=-1;
+                        while (1) {
+                                usleep(50000);
+                                cnt++;
+                                gettimeofday(&case_nowv,&case_nowz);
+                                tused=case_nowv.tv_sec-case_startv.tv_sec;
+                                //if (cnt%20==0) LOG("message : Compiling Used: "+Inttostring(tused));
+                                if (waitpid(cpid,&cstat,WNOHANG)==0) {
+                                         if (tused>compile_time_limit) {
+                                                //LOG("message : Time too much!");
+                                                //LOG("message : kill `pstree -p "+Inttostring(cpid)+" | sed 's/(/\\n(/g' | grep '(' | sed 's/(\\(.*\\)).*/\\1/' | tr \"\\n\" \" \"`");
+                                                FILE* ret = popen(kill_command.c_str(), "r");
+                                                pclose(ret);
+                                                waitpid(cpid,&cstat,0);
+                                                return ERROR_WHILE_REVIEWER_COMPILE;
+                                        }
+                                } else if (WIFSIGNALED(cstat)&&WTERMSIG(cstat)!=0) {
+                                        //LOG("message : Something is wrong.");
+                                        //LOG("message : kill `pstree -p "+Inttostring(cpid)+" | sed 's/(/\\n(/g' | grep '(' | sed 's/(\\(.*\\)).*/\\1/' | tr \"\\n\" \" \"`");
+                                        FILE* ret = popen(kill_command.c_str(), "r");
+                                        pclose(ret);
+                                        waitpid(cpid,&cstat,0);
+                                        return ERROR_WHILE_REVIEWER_COMPILE;
+                                }
+                                if (WIFEXITED(cstat)) {
+                                        waitpid(cpid,&cstat,0);
+                                        //LOG("message : Compiled");
+                                        break;
+                                }
+                        }
+                        if (pid_running((int)stringToInt(kill_pid))) {
+                            FILE* ret = popen(kill_command.c_str(), "r");
+                            pclose(ret);
+                        }
+                }
+                return SUCCESS_RETURN;
+        }
 
 	String Compiler::get_file_name(const String &target_path) {
 		String file_name = "";

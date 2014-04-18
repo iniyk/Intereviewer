@@ -24,12 +24,13 @@ namespace Intereviewer{
         result_name = split(config->top()("Player")("BoxRunner")["result_code"], ' ', true);
     }
     
-    Status BoxRunner::StartUp(const String &target,
+    Status BoxRunner::StartUp(const String &_target,
                                         int fd_in[], int fd_out[],
                                         const String &lang,
                                         int time_limit_all, int memory_limit) {
         running_status = 0;
         language = lang;
+        target = _target;
         String command = config->top()("Player")("LanguageRegister")(lang)["run_cmd"];
         int index;
         while ((index = command.find("%target")) > 0) {
@@ -58,17 +59,17 @@ namespace Intereviewer{
         if (time_limit_all == 0) time_limit_all = stringToInt(config->top()("Player")("BoxRunner")["auto_time_limit_all"]);
         if (memory_limit == 0) memory_limit = stringToInt(config->top()("Player")("BoxRunner")["auto_memory_limit"]);
         
-#ifdef ___Local_DEBUG__
-        printf("CMD : %s\n", command.c_str());
-        printf("TIME_LIMIT : %d\n", time_limit_all);
-        printf("WALL_CLOCK : %d\n", wall_clock_rate);
-        printf("MEMORY_LIMIT : %d\n", memory_limit);
-        printf("RES : ");
-        for (int i=0; i<(int)result_name.size(); ++i) {
-            printf("%s ", result_name[i].c_str());
-        }
-        printf("\n");
-#endif
+//#ifdef __DEBUG__
+//        printf("CMD : %s\n", command.c_str());
+//        printf("TIME_LIMIT : %d\n", time_limit_all);
+//        printf("WALL_CLOCK : %d\n", wall_clock_rate * time_limit_all);
+//        printf("MEMORY_LIMIT : %d\n", memory_limit);
+//        printf("RES : ");
+//        for (int i=0; i<(int)result_name.size(); ++i) {
+//            printf("%s ", result_name[i].c_str());
+//        }
+//        printf("\n");
+//#endif
         
         msb.sbox.task.ifd = fd_in[0];  
         msb.sbox.task.ofd = fd_out[1]; 
@@ -89,9 +90,8 @@ namespace Intereviewer{
             close(fd_in[1]);
             close(fd_out[0]);
             usleep(50000);
-            
-            result_t res = *sandbox_execute(&msb.sbox);
             running_status = 1;
+            result_t res = *sandbox_execute(&msb.sbox);
             
             FILE* result_file = fopen("result.txt", "w");
             
@@ -109,6 +109,11 @@ namespace Intereviewer{
             close(fd_in[0]);
             close(fd_out[1]);
             close(fd_error);
+            
+//#ifdef __DEBUG__
+//            printf("PID : %d\n", box_pid);
+//#endif
+            
             return SUCCESS_RETURN;
         }
     }
@@ -121,15 +126,28 @@ namespace Intereviewer{
         else return ERROR_WHILE_USING_SYSTEM_API;
     }
     
-    int BoxRunner::GetStatus() {
-        int status;
-        pid_t ret;
-        ret = waitpid(box_pid, &status, WNOHANG);
-        if (ret == 0) {
-            return running_status;
-        }  else {
-            running_status = 0;
-            return running_status;
+    bool BoxRunner::GetStatus() {
+//        int status;
+//        pid_t ret;
+//        ret = waitpid(box_pid, &status, WNOHANG);
+//        if (ret == 0) {
+//            return running_status;
+//        }  else {
+//            running_status = 0;
+//            return running_status;
+//        }
+        String cmd = String("pstree -p ") + Inttostring(box_pid) + " | grep " + target;
+        FILE* status = popen(cmd.c_str(), "r");
+        char opt[MAX_STR_LENGTH];
+        usleep(100000);
+        if (fscanf(status, "%s", opt) == EOF) {
+            //printf("Null File\n");
+            pclose(status);
+            return false;
+        } else {
+            //printf("%s\n", opt);
+            pclose(status);
+            return true;
         }
     }
     
