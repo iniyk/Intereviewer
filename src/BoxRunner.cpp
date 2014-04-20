@@ -31,7 +31,7 @@ namespace Intereviewer{
         running_status = 0;
         language = lang;
         target = _target;
-        String command = config->top()("Player")("LanguageRegister")(lang)["run_cmd"];
+        String command = config->top()("LanguageRegister")(lang)["run_cmd"];
         int index;
         while ((index = command.find("%target")) > 0) {
             command = command.replace(index, 7, target);
@@ -155,9 +155,9 @@ namespace Intereviewer{
         StrVector ban_list_temp;
         String ban_list_config_temp;
 #ifdef __x86_64__
-        ban_list_config_temp = config->top()("Player")("LanguageRegister")(language)["syscall_ban_list_x86_64"];
+        ban_list_config_temp = config->top()("LanguageRegister")(language)["syscall_ban_list_x86_64"];
 #else
-        ban_list_config_temp = config->top()("Player")("LanguageRegister")(language)["syscall_ban_list_i386"];
+        ban_list_config_temp = config->top()("LanguageRegister")(language)["syscall_ban_list_i386"];
 #endif
         ban_list_temp = split(ban_list_config_temp, ' ', true);
         ban_list.clear();

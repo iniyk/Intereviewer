@@ -24,7 +24,7 @@ namespace Intereviewer{
         }
 
         Status Compiler::regist_language(INI::Parser &config) {
-                String lang_list = config.top()("Player")("LanguageRegister")["lang_list"];
+                String lang_list = config.top()("LanguageRegister")["lang_list"];
                 StrVector lang_list_array = split(lang_list, ' ', true);
                 int sz = (int)lang_list_array.size();
                 for (int i=0; i<sz; ++i) {
@@ -44,13 +44,13 @@ namespace Intereviewer{
 
                 Language tmp;
                 tmp.lang_name = lang;
-                tmp.compiler_command = config.top()("Player")("LanguageRegister")(lang)["compiler"];
-                tmp.compiler_argv_before = config.top()("Player")("LanguageRegister")(lang)["compile_argv_before"];
-                tmp.compiler_argv_after = config.top()("Player")("LanguageRegister")(lang)["compile_argv_after"];
-                tmp.source_ext = config.top()("Player")("LanguageRegister")(lang)["lang_ext"];
-                tmp.exec_ext = config.top()("Player")("LanguageRegister")(lang)["output_ext"];
-                tmp.auto_output = trans2bool(config.top()("Player")("LanguageRegister")(lang)["auto_output"]);
-                tmp.output_arg = config.top()("Player")("LanguageRegister")(lang)["output_command"];
+                tmp.compiler_command = config.top()("LanguageRegister")(lang)["compiler"];
+                tmp.compiler_argv_before = config.top()("LanguageRegister")(lang)["compile_argv_before"];
+                tmp.compiler_argv_after = config.top()("LanguageRegister")(lang)["compile_argv_after"];
+                tmp.source_ext = config.top()("LanguageRegister")(lang)["lang_ext"];
+                tmp.exec_ext = config.top()("LanguageRegister")(lang)["output_ext"];
+                tmp.auto_output = trans2bool(config.top()("LanguageRegister")(lang)["auto_output"]);
+                tmp.output_arg = config.top()("LanguageRegister")(lang)["output_command"];
 
                 lv.push_back(tmp);
                 return 0;

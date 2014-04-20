@@ -25,7 +25,7 @@ namespace Intereviewer{
          void Setup(INI::Parser &_config);
          Status StartUp(const String &playername, const String &playground, 
                                const String &source_file, bool reviewer,
-                               int time_limit_all, int memory_limit, int time_limit_per);
+                               int _time_limit_all, int _memory_limit, int _time_limit_per);
     private:
         INI::Parser* config;
         Compiler compiler;
@@ -45,11 +45,8 @@ namespace Intereviewer{
         int time_limit_all, memory_limit, time_limit_per;
         
         Status compile();
-        
         Status reviewer_code();
-        
         Status normal_player_code();
-        
         bool checkAlive();
     };
 }

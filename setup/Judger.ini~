@@ -1,18 +1,14 @@
 [Player]
-working_folder = /home/iniyk/IntereviewerStage/Playgrounds/
-[[BoxRunner]]
-auto_time_limit_all = 10000
-auto_memory_limit = 8388608
-wall_clock_rate = 15
-result_code = PD OK RF ML OL TL RT AT IE BP
 [[Compiler]]
 compiler_time_limit = 5000
-compiler_file_size_limit = 8388608
+compiler_file_size_limit = 65535
+output_folder = ~/IntereiwerStage/Player/
+cinfo_folder = ~/IntereiwerStage/Player/
 
-[LanguageRegister]
+[[LanguageRegister]]
 lang_list = "C CPP JAVA CSHARP"
 
-[[C]]
+[[[C]]]
 lang_name = c
 lang_ext = c
 compiler = gcc
@@ -22,9 +18,8 @@ syscall_ban_list_i386 = 0 2 7 8 12 14 15 21 22 23 26 29 34 37 38 39 40 46 48 61 
 syscall_ban_list_x86_64 = 0 2 8 12 14 15 21 23 26 29 37 38 39 40 46 61 65 74 75 79 81 82 88 96 100 101 102 103 104 111 114 120 127 129 149 162 182 190 238 267 273
 auto_output = false
 output_command = -o
-run_cmd = ./%target.out
 
-[[CPP]]
+[[[CPP]]]
 lang_name = cpp
 lang_ext = cpp
 compiler = g++
@@ -34,9 +29,8 @@ syscall_ban_list_i386 = 0 2 7 8 12 14 15 21 22 23 26 29 34 37 38 39 40 46 48 61 
 syscall_ban_list_x86_64 = 0 2 8 12 14 15 21 23 26 29 37 38 39 40 46 61 65 74 75 79 81 82 88 96 100 101 102 103 104 111 114 120 127 129 149 162 182 190 238 267 273
 auto_output = false
 output_command = -o
-run_cmd = ./%target.out
 
-[[JAVA]]
+[[[JAVA]]]
 lang_name = java
 lang_ext = java
 compiler = javac
@@ -45,9 +39,8 @@ output_ext = class
 syscall_ban_list_i386 = 0 2 7 8 12 14 15 21 22 23 26 29 34 37 38 39 40 46 48 61 65 74 75 79 81 82 88 102 104 111 114 127 129 149 162 182 190 238 267 273
 syscall_ban_list_x86_64 = 0 2 8 12 14 15 21 23 26 29 37 38 39 40 46 61 65 74 75 79 81 82 88 96 100 101 102 103 104 111 114 127 129 149 162 182 190 238 267 273
 auto_output = true
-run_cmd = java %target
 
-[[CSHARP]]
+[[[CSHARP]]]
 lang_name = csharp
 lang_ext = cs
 compiler = mcs
@@ -56,14 +49,7 @@ syscall_ban_list_i386 = 0 2 7 8 12 15 22 23 26 29 34 37 38 40 46 48 61 65 74 75 
 syscall_ban_list_x86_64 = 0 2 8 12 15 23 26 29 37 38 40 46 61 65 74 75 79 81 82 88 100 102 103 104 111 114 127 129 149 162 182 190 238 267 273
 auto_output = false
 output_command = -out
-
-[Judger]
-reviewer_time_limit = 20000
-reviewer_memory_limit = 8388608
-player_exec_path = /home/iniyk/IntereviewerStage/player
-using_player_name_as_source_file_name = false
-auto_normal_player_source_file_name = Main
-auto_reviewer_source_file_name = Reviewer
 [Watcher]
 
+[Judger]
 

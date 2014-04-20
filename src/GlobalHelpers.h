@@ -16,6 +16,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <iterator>
 #include <istream>
 #include <sstream>
 #include <fstream>
@@ -66,6 +67,7 @@ namespace Intereviewer{
 #ifndef INT16_MAX
 #define INT16_MAX (32767)
 #endif /* INT16_MAX */
+    const int ERROR_WHILE_LOOKING_FOR_USER = -7;
     const int ERROR_WHILE_REVIEWER_COMPILE = -6;
     const int ERROR_WHILE_CREATE_PIPE = -5;
     const int ERROR_WHILE_USING_SYSTEM_API = -4;
@@ -78,7 +80,8 @@ namespace Intereviewer{
     
     typedef std::string String;
     typedef std::vector<String> StrVector;
-
+    
+    const int MAX_PLAYER = 50;
     const int MAX_FILE_PATH = 1024;
     const int MAX_STR_LENGTH = 1024;
     const int MAX_PROGRAM_OUTPUT = 4096;
@@ -114,6 +117,7 @@ namespace Intereviewer{
     String get_line_from_pipe(int fd);
     int get_line_from_pipe(int fd, char* buffer);
     bool pid_running(pid_t pid);
+    void pid_killer(pid_t pid);
     
     void LOG(String msg);
 

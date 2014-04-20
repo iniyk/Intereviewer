@@ -291,12 +291,23 @@ int decode_message(const char* str, String &reserve_word, String &message,
     sscanf(str, "%s", tmp_player_name);
     if (strcmp(tmp_player_name, "@") == 0) {
         sscanf(str, "%*s %s", tmp_play_ground);
-        target_player = "";
-        play_ground = String(tmp_play_ground);
+        if (strcmp(tmp_player_name, ":") == 0) {
+            target_player = "";
+            play_ground = "";
+        } else {
+            target_player = "";
+            play_ground = String(tmp_play_ground);
+        }
+        
     } else {
         sscanf(str, "%s %*s %s", tmp_player_name, tmp_play_ground);
-        target_player = String(tmp_player_name);
-        play_ground = String(tmp_play_ground);
+        if (strcmp(tmp_player_name, ":") == 0) {
+            target_player = String(tmp_player_name);
+            play_ground = "";
+        } else {
+            target_player = String(tmp_player_name);
+            play_ground = String(tmp_play_ground);
+        }
     }
     int len = strlen(str);
     for (int i=0; i<len; ++i) {
@@ -349,4 +360,22 @@ bool pid_running(pid_t pid) {
         return true;
     }
 }
+
+void pid_killer(pid_t pid) {
+    char buffer_rd[MAX_STR_LENGTH];
+    
+    String kill_pid = String("pstree -p ")+Inttostring(pid)+" | sed 's/(/\\n(/g' | grep '(' | sed 's/(\\(.*\\)).*/\\1/' | tr \"\\n\" \" \"";
+    FILE* pid_getter = popen(kill_pid.c_str(), "r");
+    fscanf(pid_getter, "%s", buffer_rd);
+    fclose(pid_getter);
+    kill_pid = buffer_rd;
+    
+    bool alive = pid_running(stringToInt(kill_pid));
+    if (alive) {
+        String kill_command = String("kill ")+kill_pid;
+        FILE* ret = popen(kill_command.c_str(), "r");
+        pclose(ret);
+    }
+}
+
 }

@@ -59,8 +59,12 @@ namespace Intereviewer{
             while (true) {
                 //int sz = (int)read(pipe_rd[0], buffer_rd, sizeof(buffer_rd));
                 int sz = get_line_from_pipe(pipe_rd[0], buffer_rd);
-                buffer_rd[sz] = 0;
-                printf("%s", buffer_rd);
+                if (sz == -1) return ERROR_WHILE_LOAD_FILE;
+                String reserve_word, message, player, playground;
+                decode_message(buffer_rd, reserve_word, message, player, playground);
+                playground = play_ground;
+                printf("%s @ %s : [%s] %s\n", player.c_str(), playground.c_str(),
+                                                reserve_word.c_str(), message.c_str());
             }
         } else {
             close(pipe_rd[0]);
@@ -215,7 +219,7 @@ namespace Intereviewer{
 using namespace Intereviewer;
 
 //test
-//./intereviewer main.cpp 13212 player01 atuoplayground false 2000 10240000 2000
+//./intereviewer main.cpp player01 atuoplayground false 2000 10240000 2000
 //Argv[1] is the name of target source
 //Argv[2] is the player name
 //Argv[3] is the playground string
